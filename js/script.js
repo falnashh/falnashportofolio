@@ -27,6 +27,39 @@ window.onscroll = () => {
         };
     });
 
+    // Ganti dengan URL yang baru saja Anda salin dari gambar terakhir
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycb...'; 
+
+document.getElementById('contactForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    // Ambil token captcha
+    const captchaResponse = grecaptcha.getResponse();
+    if (!captchaResponse) {
+        alert("Mohon centang reCAPTCHA!");
+        return;
+    }
+
+    const data = {
+        name: document.getElementById('name').value,
+        email: document.getElementById('email').value,
+        message: document.getElementById('message').value,
+        captcha: captchaResponse
+    };
+
+    // Kirim ke Google Apps Script
+    const response = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify(data)
+    });
+
+    const result = await response.json();
+    if (result.result === 'success') {
+        alert('Pesan berhasil terkirim dan tercatat!');
+        grecaptcha.reset(); // Reset captcha setelah berhasil
+    }
+});
+
 
 /*========== sticky navbar ==========*/
 let header = document.querySelector('.header');
